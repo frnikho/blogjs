@@ -7,6 +7,7 @@ module.exports = {
         "/node_modules/",
         "/tests/",
         "/.next/",
-        "/jest.config.js"
+        "/jest.config.js",
+        "/pages/"
     ],
 };
