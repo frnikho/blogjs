@@ -6,6 +6,7 @@ module.exports = {
     coveragePathIgnorePatterns: [
         "/node_modules/",
         "/tests/",
-        "/.next/"
-    ]
+        "/.next/",
+        "/jest.config.js"
+    ],
 };
