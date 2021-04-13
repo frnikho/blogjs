@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     name: Build Project
+    runs-on: ubuntu-latest
     container: node:15.14.0-alpine3.10
     steps:
       - uses: actions/checkout@v2
