@@ -1,6 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BlogJS - create a blog with Next.js
 
 [![Build](https://github.com/frnikho/blogjs/actions/workflows/build.yml/badge.svg)](https://github.com/frnikho/blogjs/actions/workflows/build.yml)
+
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=blogjs&metric=coverage)](https://sonarcloud.io/dashboard?id=blogjs)
 
 ## Getting Started
 
