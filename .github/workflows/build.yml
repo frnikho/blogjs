@@ -6,6 +6,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
+  build:
+    name: Build Project
+    container: node:15.14.0-alpine3.10
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run build
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
