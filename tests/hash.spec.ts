@@ -6,5 +6,6 @@ describe('Crypt a text/password', () => {
        let passwordHashed = await hash.crypt(text);
        let compare = await hash.compare(text, passwordHashed);
        expect(compare).toBe(true);
+
    });
 });
