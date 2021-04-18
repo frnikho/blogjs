@@ -12,12 +12,14 @@ jobs:
     container: node:15.14.0-alpine3.10
     steps:
       - uses: actions/checkout@v2
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      - name: Create env file
+        run: |
+          touch .env
+          echo DB_HOST =${{ secrets.DB_HOST }} >> .env
+          echoDB_USER =${{ secrets.DB_USER }} >> .env
+          echo DB_PASSWORD =${{ secrets.DB_PASSWORD }} >> .env
+          echoDB_PORT =${{ secrets.DB_PORT }} >> .env
+          echoDB_DATABASE =${{ secrets.DB_DATABASE }} >> .env
       - run: npm i
       - run: npm run build
   sonarcloud:
