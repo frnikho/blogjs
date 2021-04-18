@@ -3,4 +3,4 @@ node_modules
 .idea
 coverage
 test-report.xml
-.env.local
+.env
