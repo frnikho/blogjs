@@ -1,6 +1,6 @@
-import * as user from '../lib/user'
-import {instanceOfUser, User} from "../lib/user";
-import {instanceOfQueryError, QueryError} from "../lib/db";
+import * as user from '../src/lib/user'
+import {instanceOfUser, User} from "../src/lib/user";
+import {instanceOfQueryError, QueryError} from "../src/lib/db";
 
 describe('Create, get and remove user from database', () => {
     require('dotenv').config();
