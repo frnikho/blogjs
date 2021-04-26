@@ -14,7 +14,7 @@ describe('Create, get and remove user from database', () => {
     test('Get User by username', async () => {
        let result: User | QueryError = await user.getUserByUsername("Nikho");
        expect(instanceOfUser(result)).toBe(true);
-       expect((result as User).username).toBe("Nikho");
+       expect((result as User).username).toBe("nikho");
     });
 
     test('Get User by email', async () => {
