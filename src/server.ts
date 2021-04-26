@@ -1,4 +1,4 @@
-export default {}
+/*export default {}*/
 
 const express = require("express");
 const next = require("next");
@@ -19,8 +19,9 @@ app.prepare().then(() => {
     const server = express();
     server.use(bodyParser.urlencoded({extended: false}));
     server.use(bodyParser.json());
-
     server.use("/", apiLimiter);
+
+    server.disable('x-powered-by');
 
     server.all('**/*', (req, res) => {
         return handle(req, res);

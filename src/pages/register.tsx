@@ -5,7 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import {Button} from "@material-ui/core";
 import {Star} from "@material-ui/icons";
 
-const Register: React.FC = ({}) => {
+const Register: React.FC = () => {
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");

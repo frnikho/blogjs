@@ -3,6 +3,7 @@ export interface Post {
     userId: string
     content: string,
     title: string,
+    url_key: string,
     categoryId?: string,
     imageCover?: string,
     created_date?: Date,
@@ -22,10 +23,9 @@ export function getPostFromJson(json: any): Post {
 
 export function getPostsFromJsonArray(array: any[]): Post[] {
     let posts: Post[] = [];
-    array.map((value) => {
-        if (instanceOfPost(value)) {
+    array.forEach((value) => {
+        if (instanceOfPost(value))
             posts.push(value as Post);
-        }
     });
     return posts;
 }
