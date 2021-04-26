@@ -1,6 +1,7 @@
-import {User} from "../types/User";
+import {instanceOfUser, User} from "../types/User";
 import {createConnection} from "./db";
 import {compareText} from "./hash";
+import {getUserByUsername} from "./user";
 
 export async function login(username: string, password: string): Promise<User | null> {
     let db = await createConnection();
@@ -8,8 +9,11 @@ export async function login(username: string, password: string): Promise<User | 
 
     if (passwordResponse[0] === undefined)
         return null;
-
     let passIsGood: boolean = await compareText(password, passwordResponse[0].password as string);
-    console.log(passIsGood);
-
+    if (!passIsGood)
+        return null;
+    let user = await getUserByUsername(username);
+    if (instanceOfUser(user))
+        return user;
+    return null;
 }

@@ -10,9 +10,9 @@ async function post(req: NextApiRequest, res: NextApiResponse): Promise<void> {
 
     if (!userHelper.checkUsernameSyntax(req.body.username))
         return badRequest(req, res, {message: "Bad username syntax !"});
-    if (!userHelper.checkPassword(req.body.password))
+    if (!userHelper.checkPasswordIsValid(req.body.password))
         return badRequest(req, res, {message: "Bad password syntax !"});
-    if (!userHelper.checkPassword(req.body.email))
+    if (!userHelper.checkEmailIsValid(req.body.email))
         return badRequest(req, res, {message: "Bad email syntax !"});
 
     let response = await registerUser(req.body.username, req.body.email, req.body.password);

@@ -5,10 +5,10 @@ export function checkUsernameSyntax(username: string): boolean {
     return USERNAME_REGEX.test(username);
 }
 
-export function checkEmail(email: string) {
+export function checkEmailIsValid(email: string) {
     return EMAIL_REGEX.test(email);
 }
 
-export function checkPassword(password: string): boolean {
+export function checkPasswordIsValid(password: string): boolean {
     return password.length >= 6;
 }

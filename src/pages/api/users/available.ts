@@ -1,5 +1,5 @@
 import type {NextApiRequest, NextApiResponse} from "next";
-import {badMethod, methodNotImplementedYet} from '../../../helpers/api';
+import {badMethod} from '../../../helpers/api';
 import {checkUserAvailability} from "../../../lib/user";
 
 async function post(req: NextApiRequest, res: NextApiResponse) {

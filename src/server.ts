@@ -1,5 +1,3 @@
-/*export default {}*/
-
 const express = require("express");
 const next = require("next");
 
@@ -35,3 +33,5 @@ app.prepare().then(() => {
     console.error(err.stack);
     process.exit(-1);
 });
+
+export default app;
