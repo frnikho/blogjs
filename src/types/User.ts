@@ -7,5 +7,11 @@ export interface User {
 }
 
 export function instanceOfUser(data: any): data is User {
-    return 'username' in data;
+    if (data === undefined)
+        return false;
+    try {
+        return 'username' in data;
+    } catch (ex) {
+        return false;
+    }
 }

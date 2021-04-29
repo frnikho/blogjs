@@ -2,7 +2,7 @@ import {GetServerSideProps, NextPage} from "next";
 import {Post} from "../../types/Post";
 import ReactMarkdown from "react-markdown";
 import Hero from "../../components/Hero";
-import {Fade, Grid} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 

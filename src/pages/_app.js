@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../theme';
 import Layout from "../components/Layout/Layout";
+import {CookiesProvider} from "react-cookie";
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;
@@ -19,17 +20,19 @@ export default function MyApp(props) {
 
   return (
       <React.Fragment>
-        <Head>
-          <title>My page</title>
-          <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-        </Head>
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Layout title={"BlogJS"}>
-              <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
+          <Head>
+            <title>My page</title>
+            <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+          </Head>
+          <ThemeProvider theme={theme}>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+            <CookiesProvider>
+              <Layout title={"BlogJS"}>
+                  <Component {...pageProps} />
+              </Layout>
+            </CookiesProvider>
+          </ThemeProvider>
       </React.Fragment>
   );
 }

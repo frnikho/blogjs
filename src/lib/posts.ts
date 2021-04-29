@@ -20,3 +20,26 @@ export async function findPostByKey(key: string): Promise<Post | null> {
         return null;
     }
 }
+
+export async function checkIfUrlKeyIsAvailable(key: string): Promise<boolean> {
+    if (key === "")
+        return false;
+    let db = await createConnection();
+    let response = await db.query(`SELECT id FROM posts WHERE url_key = '${key}'`);
+
+    await db.end();
+    if (response === undefined || response[0] === undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export async function createPost(post: Post): Promise<Post | null> {
+    let db = await createConnection();
+    let response = await db.query(`INSERT INTO posts (user_id, category_id, title, content, url_key) VALUES (?, ?, ?, ?, ?) RETURNING *`,  [post.userId, post.categoryId, post.title, post.content, post.url_key]);
+    console.log(response);
+    if (response === undefined || response[0] === undefined)
+        return null;
+    return response[0] as Post;
+}

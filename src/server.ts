@@ -2,6 +2,7 @@ const express = require("express");
 const next = require("next");
 
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({dev});
@@ -17,6 +18,7 @@ app.prepare().then(() => {
     const server = express();
     server.use(bodyParser.urlencoded({extended: false}));
     server.use(bodyParser.json());
+    server.use(cookieParser());
     server.use("/", apiLimiter);
 
     server.disable('x-powered-by');

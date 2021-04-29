@@ -8,6 +8,10 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         return badRequest(req, res, {message: 'Required username and password fields !'});
     let response = await login(req.body.username, req.body.password);
 
+    if (response === null) {
+        return badRequest(req, res, {data: response});
+    }
+
     if (instanceOfUser(response))
         return ok(req, res, {data: response});
     return badRequest(req, res, {data: response});

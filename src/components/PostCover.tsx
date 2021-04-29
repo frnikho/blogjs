@@ -4,6 +4,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Card, CardMedia, Grid} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import {useRouter} from "next/router";
 
 interface PostCoverProps {
     post: Post
@@ -14,7 +15,8 @@ const useStyles = () => makeStyles({
         display: 'flex',
         paddingLeft: 0,
         paddingTop: 60,
-        minHeight: 350
+        minHeight: 350,
+        minWidth: 350,
    },
     details: {
         display: 'flex',
@@ -33,9 +35,10 @@ const useStyles = () => makeStyles({
 });
 
 const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
+    const router = useRouter();
     const classes = useStyles()();
     return (
-        <Card className={classes.root} elevation={0}>
+        <Card className={classes.root} elevation={0} onClick={() => router.push('/posts/' + post.url_key)}>
             <CardMedia className={classes.cover}
                 image="/space.jpg"
                 title="Image"

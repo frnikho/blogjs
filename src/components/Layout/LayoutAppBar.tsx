@@ -9,6 +9,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import LayoutLoginAppBar from "./LayoutLoginAppBar";
+import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LayoutAppBar: React.FC = ({children}) => {
+
+    const router = useRouter();
+
     const classes = useStyles();
 
     const [auth, setAuth] = React.useState(true);
@@ -41,8 +45,10 @@ const LayoutAppBar: React.FC = ({children}) => {
         <div className={classes.root}>
             <AppBar position="static" color={"transparent"} elevation={0}>
                 <Toolbar>
-                    <Typography variant="h6" className={classes.title}>
-                        BlogJS
+                    <Typography variant="h6" className={classes.title}
+                        onClick={async () => {
+                            await router.push('/');
+                        }}>BlogJS
                     </Typography>
                     {auth && (
                         <LayoutLoginAppBar/>
