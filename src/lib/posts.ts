@@ -43,3 +43,15 @@ export async function createPost(post: Post): Promise<Post | null> {
         return null;
     return response[0] as Post;
 }
+
+export async function getAllPostFromUser(user_id: string): Promise<Post[]> {
+    let posts: Post[] = [];
+    let db = await createConnection();
+    let response = await db.query(`SELECT * FROM posts WHERE user_id = '${user_id}' ORDER BY created_date`);
+
+    response.map((post) => {
+        posts.push(post as Post);
+    });
+
+    return posts;
+}

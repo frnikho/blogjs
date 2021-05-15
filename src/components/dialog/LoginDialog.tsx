@@ -81,7 +81,11 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
                 <Box p={2}>
                     <DialogContent>
                         <TextField fullWidth={true} autoFocus={true} margin={"dense"} label={"Username"} type="email" value={username} onInput={handleUsernameChange}/>
-                        <TextField fullWidth={true} margin={"dense"} label={"Password"} type="password" value={password} onInput={handlePasswordChange}/>
+                        <TextField fullWidth={true} margin={"dense"} label={"Password"} type="password" value={password} onInput={handlePasswordChange} onKeyPress={async (key) => {
+                        if (key.code === 'Enter')
+                            await submit();
+                        }
+                        }/>
                     </DialogContent>
                     {showResult()}
                     <DialogActions>

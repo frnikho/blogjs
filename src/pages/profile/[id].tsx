@@ -1,12 +1,16 @@
 import {GetServerSideProps, NextPage} from "next";
 import {instanceOfUser, User} from "../../types/User";
-import {Card, makeStyles} from "@material-ui/core";
-import CardContent from "@material-ui/core/CardContent";
+import {makeStyles} from "@material-ui/core";
 import React from "react";
 import Typography from "@material-ui/core/Typography";
+import {Post} from "../../types/Post";
+import Box from "@material-ui/core/Box";
+import PostCover from "../../components/PostCover";
+import {response} from "express";
 
 interface ProfilePageProps {
-    user: User
+    user: User,
+    posts?: Post[],
 }
 
 const useStyles = makeStyles({
@@ -26,36 +30,27 @@ const useStyles = makeStyles({
     },
 });
 
-const ProfilePage: NextPage<ProfilePageProps> = ({user}: ProfilePageProps) => {
+const ProfilePage: NextPage<ProfilePageProps> = ({user, posts}: ProfilePageProps) => {
     const classes = useStyles();
 
-    console.log("");
-
     return (
-        <Card className={classes.root}>
-            <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    Word of the Day
-                </Typography>
-                <Typography variant="h5" component="h2">
-                    Hello World
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                    adjective
-                </Typography>
-                <Typography variant="body2" component="p">
-                    well meaning and kindly.
-                    <br />
-                    {'"a benevolent smile"'}
-                </Typography>
-            </CardContent>
-        </Card>);
+        <div>
+            <p>{user.username}</p>
+            <h1>Posts</h1>
+            <Box m={40}>
+                {posts?.map((post) => {
+                    return (<PostCover key={post.id} post={post}/>);
+                })}
+            </Box>
+        </div>
+    );
 }
 
 export const getServerSideProps: GetServerSideProps = async ({params, res}) => {
-    let response;
+    let userResponse;
+    let postsResponse;
     const {id} = params;
-    response = await fetch("http://localhost:3000/api/users/get/", {
+    userResponse = await fetch(process.env.URL + "/api/users/get/", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -64,17 +59,33 @@ export const getServerSideProps: GetServerSideProps = async ({params, res}) => {
             username: id
         })
     });
-    response = await response.json();
-    console.log(response);
-    if (instanceOfUser(response.data)) {
-        return {
-            props: (response.data as User)
-        }
+    userResponse = await userResponse.json();
+    if (instanceOfUser(userResponse.data)) {
+        userResponse = userResponse.data as User;
     } else {
         return {
+            redirect: {
+                destination: '/',
+                permanent: true,
+            },
             props: {}
         }
     }
+    postsResponse = await fetch(process.env.URL + "/api/posts/getAllFromUser/" + userResponse.id, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    postsResponse = await postsResponse.json();
+    return {
+        props: {
+            user: (userResponse as User),
+            posts: (postsResponse.data)
+        }
+    }
+
+
 }
 
 export default ProfilePage;

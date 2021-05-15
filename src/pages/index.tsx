@@ -15,19 +15,18 @@ const Home: NextPage<HomeProps> = ({posts}: HomeProps) => {
     return (
         <div className={"Home"}>
             <Hero title={"Home"} height={150}/>
-            <Link href="/posts/hello-world">Hello</Link>
-            <Grid container spacing={3}
+            <Grid container
                   justify="center">
-                <Grid item xs={8} >
+                <Grid item xs={10} >
                     <Container>
                         {posts.map((post) => {
                             return <PostCover key={post.id} post={post}/>
                         })}
                     </Container>
                 </Grid>
-                <Grid item xs={4}>
-                    <p>ABC</p>
-                </Grid>
+               {/* <Grid item xs={2}>
+                    <p>Hello</p>
+                </Grid>*/}
             </Grid>
         </div>
 

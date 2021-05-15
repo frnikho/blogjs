@@ -42,6 +42,16 @@ export async function getUserByEmail(email: string) : Promise<User | QueryError>
     return (result[0] as User);
 }
 
+export async function getUserById(id: string): Promise<User | null> {
+    let db = await createConnection();
+    let result = await db.query(`SELECT id, username, email, created_time FROM users WHERE id = '${id}'`);
+
+    await db.end();
+    if (result === undefined || result[0] === undefined)
+        return null;
+    return result[0] as User;
+}
+
 export async function registerUser(username: string, email: string, password: string): Promise<User | QueryError> {
     let hash = await crypt(password);
     let con = await createConnection();

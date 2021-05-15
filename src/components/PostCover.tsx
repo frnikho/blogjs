@@ -5,6 +5,7 @@ import {Card, CardMedia, Grid} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import {useRouter} from "next/router";
+import Moment from "react-moment";
 
 interface PostCoverProps {
     post: Post
@@ -23,10 +24,14 @@ const useStyles = () => makeStyles({
         flexDirection: 'column'
     },
     cover: {
-        width: 500
+        minWidth: 600,
+        minHeight: 200,
+        maxHeight: 400
     },
     title: {
-        fontSize: 24,
+        fontSize: 28,
+        paddingTop: 10,
+        paddingBottom: 10,
         fontWeight: 500
     },
     content: {
@@ -45,7 +50,6 @@ const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
             />
             <CardContent>
                 <Grid container
-                      spacing={3}
                       direction="column"
                       justify="center"
                 >
@@ -54,11 +58,13 @@ const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
                             {post.title}
                         </Typography>
                     </Grid>
-                    <Grid item>{post.created_date}</Grid>
                     <Grid item>
-                        <Typography className={classes.content}>
+                        <Moment date={post.created_date} format={"YYYY/MM/DD"}/>
+                    </Grid>
+                    <Grid item>
+                        {/*<Typography className={classes.content}>
                             {post.content}
-                        </Typography>
+                        </Typography>*/}
                     </Grid>
                 </Grid>
             </CardContent>

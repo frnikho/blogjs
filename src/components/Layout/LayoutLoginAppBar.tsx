@@ -93,7 +93,7 @@ const LayoutLoginAppBar: React.FC = ({}) => {
                         keepMounted={true}
                         anchorEl={anchorEl}
                     >
-                        <MenuItem onClick={routeToProfile}>Profile</MenuItem>
+                        {/*<MenuItem onClick={routeToProfile}>Profile</MenuItem>*/}
                         <MenuItem onClick={async () => {
                             await router.push('/posts/create');
                         }}>Create posts</MenuItem>

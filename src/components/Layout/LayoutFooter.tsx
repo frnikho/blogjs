@@ -18,7 +18,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
-                Your Website
+                build with MaterialUI
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -34,7 +34,7 @@ const LayoutFooter: React.FC = ({children}) => {
         <footer className={classes.footer}>
             <Container maxWidth="lg" >
                 <Typography variant="h6" align="center" gutterBottom>
-                    {"Hello World"}
+                    {"BlogJS"}
                 </Typography>
                 <Copyright />
             </Container>

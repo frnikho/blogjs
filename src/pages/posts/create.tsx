@@ -9,8 +9,6 @@ import MarkdownPreview from '@uiw/react-markdown-preview';
 import '@uiw/react-markdown-preview/dist/markdown.css';
 import '@uiw/react-markdown-preview/lib/esm/styles/markdown.css';
 import {Category} from "../../types/Category";
-import {Post} from "../../types/Post";
-import {createPostUrlKey} from "../../helpers/post";
 import {useCookies} from "react-cookie";
 
 interface CreatePostProps {
@@ -25,6 +23,8 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
     const [content, setContent] = useState("**Hello world!!!**");
     const [category, setCategory] = useState(categories[0]?.id || "?");
 
+    const [coverImageData, setCoverImageData] = useState("");
+
     const [submitLoading, setSubmitLoading] = useState(false);
 
     const changeSelectedCategory = (event) => {
@@ -35,7 +35,31 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
         if (submitLoading) {
             return (<CircularProgress hidden={!Boolean(submitLoading)}/>)
         } else {
-            return (<Button hidden={Boolean(submitLoading)} fullWidth size={"large"} variant={"contained"} color={"primary"} onClick={submit}>Post</Button>);
+            return (
+                <Button hidden={Boolean(submitLoading)} fullWidth size={"large"} variant={"contained"} color={"primary"} onClick={submit}>Post</Button>
+            );
+        }
+    }
+
+    const handleUpload = async (event) => {
+        console.log(event);
+        let file = event.target.files[0];
+        setCoverImageData(URL.createObjectURL(file));
+       /* const reader = new FileReader();
+        const url = reader.readAsDataURL(file);
+        reader.onloadend = (e) => {
+            console.log(reader.result);
+
+        };*/
+    }
+
+    const showCoverImagePreview = () => {
+        if (coverImageData !== "") {
+            return (
+                <div>
+                    <img src={coverImageData} width={200}/>
+                </div>
+            );
         }
     }
 
@@ -116,6 +140,30 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                     </Box>
                 </Grid>
             </Grid>
+            <Box m={4}>
+                <Grid container>
+                    <Grid item xs={1}>
+                        <input
+                            hidden={true}
+                            accept="image/*"
+                            id="contained-button-file"
+                            type="file"
+                            onChange={handleUpload}
+                        />
+                        <label htmlFor="contained-button-file">
+                            <Button variant="contained" color="primary" component="span">
+                                Upload
+                            </Button>
+                        </label>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Button variant={"contained"} color={"default"} onClick={() => setCoverImageData("")}>Delete Cover</Button>
+                    </Grid>
+                    <Grid item xs={1}>
+                        {showCoverImagePreview()}
+                    </Grid>
+                </Grid>
+            </Box>
         </div>
     )
 }
