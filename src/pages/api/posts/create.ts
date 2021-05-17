@@ -13,6 +13,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     if (!await checkSessionIsRegistered(req.cookies.login_session))
         return badRequest(req, res, {message: 'Invalid user session, clear your cookie and try again'});
 
+    console.log(req.body);
+
     let key = createPostUrlKey(req.body.title);
     let canContinue = await checkIfUrlKeyIsAvailable(key);
     if (!canContinue)

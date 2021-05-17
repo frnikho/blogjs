@@ -10,6 +10,8 @@ import '@uiw/react-markdown-preview/dist/markdown.css';
 import '@uiw/react-markdown-preview/lib/esm/styles/markdown.css';
 import {Category} from "../../types/Category";
 import {useCookies} from "react-cookie";
+import axios from "axios";
+import {useRouter} from "next/router";
 
 interface CreatePostProps {
     categories: Category[] | null,
@@ -19,11 +21,14 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
 
     const [cookies] = useCookies(['login_session']);
 
+    const router = useRouter();
+
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("**Hello world!!!**");
     const [category, setCategory] = useState(categories[0]?.id || "?");
 
     const [coverImageData, setCoverImageData] = useState("");
+    const [imageData, setImageData] = useState("");
 
     const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -42,14 +47,16 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
     }
 
     const handleUpload = async (event) => {
-        console.log(event);
         let file = event.target.files[0];
+        if (file === undefined)
+            return;
         setCoverImageData(URL.createObjectURL(file));
-       /* const reader = new FileReader();
+        setImageData(file);
+/*        const reader = new FileReader();
         const url = reader.readAsDataURL(file);
         reader.onloadend = (e) => {
             console.log(reader.result);
-
+            setImageData(reader.result.toString());
         };*/
     }
 
@@ -79,10 +86,24 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                 content: content,
             }),
         });
-
         let response = await resp.json();
+
         console.log(response);
+
+        let formData = new FormData();
+        formData.append('cover', imageData);
+
+        let coverResponse = await axios.post("/api/posts/cover/" + response.data.id, formData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: 'POST',
+        });
+
         setSubmitLoading(false);
+
+        await router.push('/posts/' + response.data.url_key);
+
     }
 
 

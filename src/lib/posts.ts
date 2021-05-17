@@ -1,5 +1,7 @@
 import {instanceOfPost, Post} from '../types/Post';
 import {createConnection} from "./db";
+import path from "path";
+import {v4 as uuidv4} from 'uuid';
 
 export async function getLatestPost(): Promise<Post[]> {
     let posts: Post[] = [];
@@ -48,10 +50,20 @@ export async function getAllPostFromUser(user_id: string): Promise<Post[]> {
     let posts: Post[] = [];
     let db = await createConnection();
     let response = await db.query(`SELECT * FROM posts WHERE user_id = '${user_id}' ORDER BY created_date`);
-
+    await db.end();
     response.map((post) => {
         posts.push(post as Post);
     });
-
     return posts;
+}
+
+
+export async function setPostCover(post_id: string, user_id: string, target: any): Promise<Boolean> {
+    let filePath = "/" + uuidv4() + target.name;
+    let serverPath = path.join(process.cwd(), 'public', filePath);
+    let db = await createConnection();
+    let response = await db.query(`UPDATE posts SET image_cover_url = '${filePath}' WHERE id = '${post_id}'`);
+    await db.end();
+    let responseFile = await target.mv(serverPath);
+    return false;
 }

@@ -2,6 +2,7 @@ const express = require("express");
 const next = require("next");
 
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const dev = process.env.NODE_ENV !== 'production';
@@ -19,6 +20,7 @@ app.prepare().then(() => {
     server.use(bodyParser.urlencoded({extended: false}));
     server.use(bodyParser.json());
     server.use(cookieParser());
+    server.use(fileUpload());
     server.use("/", apiLimiter);
 
     server.disable('x-powered-by');

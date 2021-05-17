@@ -42,10 +42,15 @@ const useStyles = () => makeStyles({
 const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
     const router = useRouter();
     const classes = useStyles()();
+
+    console.log(post.image_cover_url);
+
+    let imagePath = post.image_cover_url || "/space.jpg";
+
     return (
         <Card className={classes.root} elevation={0} onClick={() => router.push('/posts/' + post.url_key)}>
             <CardMedia className={classes.cover}
-                image="/space.jpg"
+                image={imagePath}
                 title="Image"
             />
             <CardContent>

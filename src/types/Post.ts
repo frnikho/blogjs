@@ -5,7 +5,7 @@ export interface Post {
     title: string,
     url_key: string,
     categoryId?: string,
-    imageCover?: string,
+    image_cover_url?: string,
     created_date?: Date,
     updated_date?: Date
 }

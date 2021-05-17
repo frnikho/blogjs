@@ -41,7 +41,7 @@ class PostComment extends Component<CommentProps> {
                     <Paper variant="outlined" square>
                         <Grid container>
                             <Grid item xs={2}>
-                                <p>{this.state.username || ""}</p>
+                                <p>{""}</p>
                             </Grid>
                             <Grid item xs={10}>
                                 <p>{this.props.comment.content}</p>
