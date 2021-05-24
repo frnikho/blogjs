@@ -59,7 +59,7 @@ export async function getAllPostFromUser(user_id: string): Promise<Post[]> {
 
 
 export async function setPostCover(post_id: string, user_id: string, target: any): Promise<Boolean> {
-    let filePath = "/" + uuidv4() + target.name;
+    let filePath = "/" + uuidv4();
     let serverPath = path.join(process.cwd(), 'public', filePath);
     let db = await createConnection();
     let response = await db.query(`UPDATE posts SET image_cover_url = '${filePath}' WHERE id = '${post_id}'`);

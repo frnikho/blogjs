@@ -43,9 +43,9 @@ const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
     const router = useRouter();
     const classes = useStyles()();
 
-    console.log(post.image_cover_url);
+    console.log("public" + post.image_cover_url);
 
-    let imagePath = post.image_cover_url || "/space.jpg";
+    let imagePath = "public" + post.image_cover_url || "/space.jpg";
 
     return (
         <Card className={classes.root} elevation={0} onClick={() => router.push('/posts/' + post.url_key)}>

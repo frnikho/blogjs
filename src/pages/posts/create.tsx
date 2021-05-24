@@ -48,6 +48,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
 
     const handleUpload = async (event) => {
         let file = event.target.files[0];
+
         if (file === undefined)
             return;
         setCoverImageData(URL.createObjectURL(file));
@@ -71,7 +72,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
     }
 
     const submit = async () => {
-        if (title === "" || content === "" || category === "")
+        if (submitLoading || title === "" || content === "" || category === "")
             return;
         setSubmitLoading(true);
 
@@ -88,22 +89,23 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
         });
         let response = await resp.json();
 
-        console.log(response);
 
-        let formData = new FormData();
-        formData.append('cover', imageData);
+        if (imageData !== "") {
+            let formData = new FormData();
+            formData.append('cover', imageData);
 
-        let coverResponse = await axios.post("/api/posts/cover/" + response.data.id, formData, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            method: 'POST',
-        });
+            console.log(imageData);
+
+            let coverResponse = await axios.post("/api/posts/cover/" + response.data.id, formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+            });
+        }
 
         setSubmitLoading(false);
-
         await router.push('/posts/' + response.data.url_key);
-
     }
 
 

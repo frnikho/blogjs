@@ -21,6 +21,7 @@ app.prepare().then(() => {
     server.use(bodyParser.json());
     server.use(cookieParser());
     server.use(fileUpload());
+    server.use('/public', express.static('public'));
     server.use("/", apiLimiter);
 
     server.disable('x-powered-by');
@@ -38,4 +39,4 @@ app.prepare().then(() => {
     process.exit(-1);
 });
 
-export default app;
+//export default app;
