@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 
 import {Button} from "@material-ui/core";
 import {Star} from "@material-ui/icons";
+import HOST_URL from "../data";
 
 const Register: React.FC = () => {
 
@@ -13,7 +14,7 @@ const Register: React.FC = () => {
     const [response, setResponse] = useState({});
 
     async function submit() {
-        let response = await fetch("/api/users/create", {
+        let response = await fetch(HOST_URL + "/api/users/create", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password, email}),

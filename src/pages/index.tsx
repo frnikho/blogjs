@@ -6,6 +6,7 @@ import Hero from "../components/Hero";
 import Container from "@material-ui/core/Container";
 import {Grid} from "@material-ui/core";
 import Link from "@material-ui/core/Link";
+import HOST_URL from "../data";
 
 interface HomeProps {
     posts: Post[];
@@ -38,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
     let posts: Post[] = [];
 
-    let response = await fetch(`/api/posts/getLatest/`, {
+    let response = await fetch(HOST_URL + `/api/posts/getLatest/`, {
         method: 'GET',
         headers: {
             'Content-type': "application/json",

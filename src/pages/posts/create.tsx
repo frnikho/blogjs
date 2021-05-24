@@ -12,6 +12,7 @@ import {Category} from "../../types/Category";
 import {useCookies} from "react-cookie";
 import axios from "axios";
 import {useRouter} from "next/router";
+import HOST_URL from "../../data";
 
 interface CreatePostProps {
     categories: Category[] | null,
@@ -76,7 +77,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
             return;
         setSubmitLoading(true);
 
-        let resp = await fetch("/api/posts/create", {
+        let resp = await fetch(HOST_URL + "/api/posts/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,7 +97,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
 
             console.log(imageData);
 
-            let coverResponse = await axios.post("/api/posts/cover/" + response.data.id, formData, {
+            let coverResponse = await axios.post(HOST_URL + "/api/posts/cover/" + response.data.id, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -202,7 +203,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, req, res})
         }
     }
 
-    let resp = await fetch('/api/categories/all', {
+    let resp = await fetch(HOST_URL + '/api/categories/all', {
         method: 'GET',
         headers: {
             'Content-type': 'application/json',

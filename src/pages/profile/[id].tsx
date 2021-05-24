@@ -7,6 +7,7 @@ import {Post} from "../../types/Post";
 import Box from "@material-ui/core/Box";
 import PostCover from "../../components/PostCover";
 import {response} from "express";
+import HOST_URL from "../../data";
 
 interface ProfilePageProps {
     user: User,
@@ -50,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, res}) => {
     let userResponse;
     let postsResponse;
     const {id} = params;
-    userResponse = await fetch("/api/users/get/", {
+    userResponse = await fetch(HOST_URL + "/api/users/get/", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, res}) => {
             props: {}
         }
     }
-    postsResponse = await fetch("/api/posts/getAllFromUser/" + userResponse.id, {
+    postsResponse = await fetch(HOST_URL + "/api/posts/getAllFromUser/" + userResponse.id, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

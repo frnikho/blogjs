@@ -17,6 +17,7 @@ import theme from "../../theme";
 import Box from "@material-ui/core/Box";
 import {checkEmailIsValid, checkPasswordIsValid, checkUsernameSyntax} from "../../helpers/user";
 import {Alert} from "@material-ui/lab";
+import HOST_URL from "../../data";
 
 
 const useStyles = makeStyles({
@@ -101,7 +102,7 @@ export function RegisterDialog({isOpen, handleClose}) {
         if (!(usernameIsValid && emailIsValid && passwordIsValid))
             return;
 
-        let resp = await fetch("/api/users/create", {
+        let resp = await fetch(HOST_URL + "/api/users/create", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password, email}),

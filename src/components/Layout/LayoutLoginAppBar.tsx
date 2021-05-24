@@ -7,6 +7,7 @@ import {Session} from "../../types/Session";
 import {useCookies} from "react-cookie";
 import Hide from "../Hide";
 import {useRouter} from "next/router";
+import HOST_URL from "../../data";
 
 const LayoutLoginAppBar: React.FC = ({}) => {
 
@@ -30,7 +31,7 @@ const LayoutLoginAppBar: React.FC = ({}) => {
     };
 
     const logout = async () => {
-        let resp = await fetch("/api/auth/session", {
+        let resp = await fetch(HOST_URL + "/api/auth/session", {
             method: 'DELETE',
             credentials: "include"
         });
@@ -50,7 +51,7 @@ const LayoutLoginAppBar: React.FC = ({}) => {
     }
 
     const onLogin = async (user: User) => {
-        let resp = await fetch("/api/auth/session", {
+        let resp = await fetch(HOST_URL + "/api/auth/session", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({user_id: user.id}),

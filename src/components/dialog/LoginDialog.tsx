@@ -7,6 +7,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import theme from "../../theme";
 import {Alert} from "@material-ui/lab";
 import {instanceOfUser} from "../../types/User";
+import HOST_URL from "../../data";
 
 const useStyles = makeStyles({
     loginRoot: {
@@ -57,7 +58,7 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
 
     const submit = async () => {
 
-        let resp = await fetch("/api/auth/login", {
+        let resp = await fetch(HOST_URL + "/api/auth/login", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password}),

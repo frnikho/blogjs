@@ -2,6 +2,7 @@ import React, {Component, useState} from "react";
 import * as type from "../types/Comment";
 import {Grid, Paper} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
+import HOST_URL from "../data";
 
 export interface CommentProps {
     comment: type.Comment,
@@ -23,7 +24,7 @@ class PostComment extends Component<CommentProps> {
     }
 
     getUsername = async () => {
-        let resp = await fetch("/api/users/id/" + this.props.comment.user_id, {
+        let resp = await fetch(HOST_URL + "/api/users/id/" + this.props.comment.user_id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

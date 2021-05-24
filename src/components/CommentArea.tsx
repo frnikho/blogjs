@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Box from "@material-ui/core/Box";
 import {Button, CircularProgress, Grid, TextField} from "@material-ui/core";
 import {Comment} from "../types/Comment";
+import HOST_URL from "../data";
 
 export interface CommentAreaProps {
     post_id: string,
@@ -16,7 +17,7 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
 
     const submit = async () => {
         setLoading(true);
-        let resp = await fetch("/api/comments/create", {
+        let resp = await fetch(HOST_URL + "/api/comments/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
