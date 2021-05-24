@@ -76,7 +76,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
             return;
         setSubmitLoading(true);
 
-        let resp = await fetch(process.env.URL + "/api/posts/create", {
+        let resp = await fetch("/api/posts/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, req, res})
         }
     }
 
-    let resp = await fetch(process.env.URL+ '/api/categories/all', {
+    let resp = await fetch('/api/categories/all', {
         method: 'GET',
         headers: {
             'Content-type': 'application/json',

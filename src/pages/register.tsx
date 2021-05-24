@@ -13,7 +13,7 @@ const Register: React.FC = () => {
     const [response, setResponse] = useState({});
 
     async function submit() {
-        let response = await fetch(process.env.URL + "/api/users/create", {
+        let response = await fetch("/api/users/create", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password, email}),

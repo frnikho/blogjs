@@ -25,7 +25,7 @@ const PostPage: NextPage<PostPageProps> = ({post, logged, user, comments}: PostP
 
     const onPost = async (comment: Comment) => {
 
-        let resp = await fetch(process.env.URL + "/api/comments/all", {
+        let resp = await fetch("/api/comments/all", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const PostPage: NextPage<PostPageProps> = ({post, logged, user, comments}: PostP
     }
 
     const getUsername = async (user_id: string) => {
-        let resp = await fetch(process.env.URL + "/api/users/id/" + user_id, {
+        let resp = await fetch("/api/users/id/" + user_id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const PostPage: NextPage<PostPageProps> = ({post, logged, user, comments}: PostP
 
 export const getServerSideProps: GetServerSideProps = async ({params, res, req}) => {
     const {title} = params;
-    let response = await (await fetch(`${process.env.URL}/api/posts/findByKey/${title as string}`)).json();
+    let response = await (await fetch(`/api/posts/findByKey/${title as string}`)).json();
     if (response.code != 200) {
         return {
             redirect: {
@@ -105,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, res, req})
         }
     }
 
-    let resp = await fetch(process.env.URL + "/api/comments/all", {
+    let resp = await fetch("/api/comments/all", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, res, req})
         logged = true;
 
 
-    let userResponse = await fetch(process.env.URL + "/api/users/id/" + response.data.user_id, {
+    let userResponse = await fetch("/api/users/id/" + response.data.user_id, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

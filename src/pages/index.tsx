@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
     let posts: Post[] = [];
 
-    let response = await fetch(`${process.env.URL}/api/posts/getLatest/`, {
+    let response = await fetch(`/api/posts/getLatest/`, {
         method: 'GET',
         headers: {
             'Content-type': "application/json",

@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, res}) => {
     let userResponse;
     let postsResponse;
     const {id} = params;
-    userResponse = await fetch(process.env.URL + "/api/users/get/", {
+    userResponse = await fetch("/api/users/get/", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async ({params, res}) => {
             props: {}
         }
     }
-    postsResponse = await fetch(process.env.URL + "/api/posts/getAllFromUser/" + userResponse.id, {
+    postsResponse = await fetch("/api/posts/getAllFromUser/" + userResponse.id, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

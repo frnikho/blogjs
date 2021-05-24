@@ -101,7 +101,7 @@ export function RegisterDialog({isOpen, handleClose}) {
         if (!(usernameIsValid && emailIsValid && passwordIsValid))
             return;
 
-        let resp = await fetch(process.env.URL + "/api/users/create", {
+        let resp = await fetch("/api/users/create", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password, email}),
