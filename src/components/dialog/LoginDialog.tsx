@@ -57,7 +57,7 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
 
     const submit = async () => {
 
-        let resp = await fetch("/api/auth/login", {
+        let resp = await fetch(process.env.URL + "/api/auth/login", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password}),

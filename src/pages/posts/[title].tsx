@@ -25,7 +25,7 @@ const PostPage: NextPage<PostPageProps> = ({post, logged, user, comments}: PostP
 
     const onPost = async (comment: Comment) => {
 
-        let resp = await fetch("/api/comments/all", {
+        let resp = await fetch(process.env.URL + "/api/comments/all", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
 
     const submit = async () => {
         setLoading(true);
-        let resp = await fetch("/api/comments/create", {
+        let resp = await fetch(process.env.URL + "/api/comments/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

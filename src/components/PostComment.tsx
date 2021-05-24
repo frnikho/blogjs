@@ -23,7 +23,7 @@ class PostComment extends Component<CommentProps> {
     }
 
     getUsername = async () => {
-        let resp = await fetch("http://localhost:3000/api/users/id/" + this.props.comment.user_id, {
+        let resp = await fetch(process.env.URL + "/api/users/id/" + this.props.comment.user_id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,4 +1,5 @@
 module.exports = {
+    excludeFile: (str) => /server.ts/.test(str),
     images: {
         domains: ['localhost']
     }
