@@ -17,12 +17,12 @@ export async function getLatestPost(): Promise<Post[]> {
 export async function findPostByKey(key: string): Promise<Post | null> {
     let db = await createConnection();
     let response = await db.query(`SELECT * FROM posts WHERE url_key = '${key}'`);
+    await db.end();
     if (response[0] != null && instanceOfPost(response[0])) {
         return (response[0] as Post);
     } else {
         return null;
     }
-    await db.end();
 }
 
 export async function checkIfUrlKeyIsAvailable(key: string): Promise<boolean> {

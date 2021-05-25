@@ -20,5 +20,7 @@ export const getComments = async (): Promise<Comment[]> => {
         comments.push(value as Comment);
     });
 
+    await db.end();
+
     return comments.reverse();
 }
