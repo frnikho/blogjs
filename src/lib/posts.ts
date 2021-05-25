@@ -10,6 +10,7 @@ export async function getLatestPost(): Promise<Post[]> {
     response.map((value) => {
        posts.push(value as Post);
     });
+    await db.end();
     return posts;
 }
 
@@ -21,6 +22,7 @@ export async function findPostByKey(key: string): Promise<Post | null> {
     } else {
         return null;
     }
+    await db.end();
 }
 
 export async function checkIfUrlKeyIsAvailable(key: string): Promise<boolean> {
@@ -43,6 +45,7 @@ export async function createPost(post: Post): Promise<Post | null> {
     console.log(response);
     if (response === undefined || response[0] === undefined)
         return null;
+    await db.end();
     return response[0] as Post;
 }
 

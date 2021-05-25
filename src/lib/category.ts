@@ -9,5 +9,6 @@ export async function getCategories(): Promise<Category[]> {
         if (instanceOfCategory(category))
             categories.push(category as Category);
     });
+    await db.end();
     return categories;
 }
