@@ -7,10 +7,10 @@ export async function getLatestPost(): Promise<Post[]> {
     let posts: Post[] = [];
     let db = await createConnection();
     let response = await db.query(`SELECT * FROM posts ORDER BY created_date LIMIT 20;`);
+    await db.end();
     response.map((value) => {
        posts.push(value as Post);
     });
-    await db.end();
     return posts;
 }
 

@@ -16,11 +16,25 @@ export const getComments = async (): Promise<Comment[]> => {
     let db = await createConnection();
     let response = await db.query(`SELECT * FROM comments ORDER BY created_date`);
 
+    await db.end();
+
     response.map((value) => {
         comments.push(value as Comment);
     });
 
+    return comments.reverse();
+}
+
+export const getCommentsWithPostID = async (post_id: string): Promise<Comment[]> => {
+    let comments: Comment[] = [];
+    let db = await createConnection();
+    let response = await db.query(`SELECT * FROM comments WHERE post_id = '${post_id}' ORDER BY created_date`);
+
     await db.end();
+
+    response.map((value) => {
+        comments.push(value as Comment);
+    });
 
     return comments.reverse();
 }

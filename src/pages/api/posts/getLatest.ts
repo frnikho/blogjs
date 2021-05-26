@@ -1,5 +1,5 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {badMethod, badRequest, ok} from "../../../helpers/api";
+import {badMethod, ok} from "../../../helpers/api";
 import {getLatestPost} from "../../../lib/posts";
 import {Post} from "../../../types/Post";
 
