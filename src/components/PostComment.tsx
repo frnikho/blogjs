@@ -32,9 +32,8 @@ class PostComment extends Component<CommentProps> {
             headers: {
                 'Content-Type': 'application/json'
             },
-        });
+        }).catch(err => err);
         let response = await resp.json();
-        console.log(response);
         return response.data.username;
     }
 
@@ -65,7 +64,7 @@ class PostComment extends Component<CommentProps> {
                             <Box p={4}>
                                 <Paper variant="outlined" square>
                                     <Box m={0} p={2}>
-                                        <p>{this.props.comment.content}</p>
+                                        <p >{this.props.comment.content}</p>
                                     </Box>
                                 </Paper>
                             </Box>

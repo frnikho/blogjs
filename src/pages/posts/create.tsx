@@ -13,6 +13,7 @@ import {useCookies} from "react-cookie";
 import axios from "axios";
 import {useRouter} from "next/router";
 import HOST_URL from "../../data";
+import {Alert} from "@material-ui/lab";
 
 interface CreatePostProps {
     categories: Category[] | null,
@@ -31,10 +32,13 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
     const [coverImageData, setCoverImageData] = useState("");
     const [imageData, setImageData] = useState("");
 
+    const [isValid, setIsValid] = useState(true);
+    const [invalidMessage, setInvalidMessage] = useState("");
+
     const [submitLoading, setSubmitLoading] = useState(false);
 
     const changeSelectedCategory = (event) => {
-        setCategory(event.target.value)
+        setCategory(event.target.value);
     }
 
     const showSubmit = () => {
@@ -73,6 +77,8 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
     }
 
     const submit = async () => {
+        if (!isValid)
+            return;
         if (submitLoading || title === "" || content === "" || category === "")
             return;
         setSubmitLoading(true);
@@ -87,6 +93,9 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                 category: category,
                 content: content,
             }),
+        }).catch((error) => {
+            setSubmitLoading(false);
+            return error;
         });
         let response = await resp.json();
 
@@ -102,6 +111,8 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                     'Content-Type': 'application/json',
                 },
                 method: 'POST',
+            }).catch((err) => {
+                return err;
             });
         }
 
@@ -109,6 +120,37 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
         await router.push('/posts/' + response.data.url_key);
     }
 
+    const onTitleChanged = (event) => {
+        setTitle(event.target.value);
+        if (event.target.value.length < 5 ) {
+            setInvalidMessage("Too short title ! (< 5)");
+            setIsValid(false);
+        } else if (event.target.value.length > 200) {
+            setInvalidMessage("Too long title ! (> 200)");
+            setIsValid(false);
+        } else {
+            setIsValid(true);
+        }
+    }
+
+    const onContentChanged = (event) => {
+        setContent(event.target.value);
+        if (content.length < 50) {
+            setInvalidMessage("Too short content ( < 50)");
+            setIsValid(false);
+        } else if (content.length > 25565) {
+            setInvalidMessage("Too long content ! ( > 25565)");
+            setIsValid(false);
+        } else {
+            setIsValid(true);
+        }
+    }
+
+    const showError = () => {
+        if (!isValid) {
+            return (<Alert severity="error">{invalidMessage}</Alert>);
+        }
+    }
 
     return (
         <div>
@@ -116,7 +158,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
             <Grid container className={""} >
                 <Grid item xs={6}>
                     <Box m={2} mx={2}>
-                        <TextField label={"Title"} value={title} onChange={(event) => setTitle(event.target.value)} fullWidth variant={"outlined"}/>
+                        <TextField label={"Title"} value={title} onChange={onTitleChanged} fullWidth variant={"outlined"}/>
                     </Box>
                 </Grid>
                 <Grid item xs={4}>
@@ -145,6 +187,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                     </Box>
                 </Grid>
             </Grid>
+            {showError()}
             <Grid container spacing={0}>
                 <Grid item xs={6}>
                     <Box m={2}>
@@ -152,7 +195,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                             id="standard-multiline-static"
                             label="Content"
                             value={content}
-                            onChange={(event) => setContent(event.target.value)}
+                            onChange={onContentChanged}
                             multiline
                             fullWidth
                             variant={"outlined"}/>

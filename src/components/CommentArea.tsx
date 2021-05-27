@@ -3,6 +3,7 @@ import Box from "@material-ui/core/Box";
 import {Button, CircularProgress, Grid, TextField} from "@material-ui/core";
 import {Comment} from "../types/Comment";
 import HOST_URL from "../data";
+import {Alert} from "@material-ui/lab";
 
 export interface CommentAreaProps {
     post_id: string,
@@ -14,8 +15,24 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
     const [content, setContent] = useState("");
     const [response, setResponse] = useState({});
     const [isLoading, setLoading] = useState(false);
+    const [isValid, setIsValid] = useState(true);
+    const [invalidMessage, setInvalidMessage] = useState("");
+
+    const onAreaChanged = async () => {
+
+    }
 
     const submit = async () => {
+        if (content.length > 200) {
+            setIsValid(false);
+            setInvalidMessage("Too long comment ! (> 255)");
+            return;
+        } else if (content.length < 5) {
+            setIsValid(false);
+            setInvalidMessage("Too short comment ! (< 5)");
+            return;
+        }
+
         setLoading(true);
         let resp = await fetch(HOST_URL + "/api/comments/create", {
             method: 'POST',
@@ -27,11 +44,13 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
                 content: content,
                 post_id: post_id,
             }),
+        }).catch((error) => {
+            setLoading(false);
+            return error;
         });
 
         let response = await resp.json();
-
-        console.log(response);
+        setIsValid(true);
 
         if (response.code === 200) {
             setResponse(response.data as Comment);
@@ -44,7 +63,13 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
     }
 
     const onContentChange = (event) => {
+        if (event.target.value.length > 255) {
+            setIsValid(false);
+            setInvalidMessage("Too long comment (> 255)");
+            return;
+        }
         setContent(event.target.value);
+        setIsValid(true);
     }
 
     const showSubmit = () => {
@@ -55,12 +80,18 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
         }
     }
 
+    const showError = () => {
+        if (!isValid) {
+            return (<Alert severity="error">{invalidMessage}</Alert>);
+        }
+    }
+
     return (
         <div>
             <Grid container>
                 <Grid item xs={10}>
                     <Box m={4}>
-                        <TextField fullWidth variant={"outlined"} multiline rows={4} value={content} onChange={onContentChange}/>
+                        <TextField fullWidth variant={"outlined"} multiline rows={4} rowsMax={4} aria-valuemax={210} value={content} onChange={onContentChange}/>
                     </Box>
                 </Grid>
                 <Grid item xs={2}>
@@ -76,7 +107,7 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
                     </Box>
                 </Grid>
             </Grid>
-
+            {showError()}
         </div>
     )
 }

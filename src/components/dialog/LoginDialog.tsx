@@ -51,7 +51,7 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
         if (result.code === 200) {
             return (<Alert severity="success">User '{username}' logged !</Alert>)
         }
-        if (result.code === 400) {
+        if (result.code === 400 || result === "") {
             return (<Alert severity="error">Bad username or password !</Alert>)
         }
     }
@@ -62,6 +62,8 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password}),
+        }).catch((err) => {
+            return err;
         });
 
         let response = await resp.json();
