@@ -11,6 +11,13 @@ export const createComment = async (content: string, user_id: string, post_id: s
     return (response[0] as Comment);
 }
 
+export async function deleteCommentWithId(id: string): Promise<boolean> {
+    let db = await createConnection();
+    let response = await db.query(`DELETE FROM comments WHERE id = '${id}'`);
+    await db.end();
+    return true;
+}
+
 export const getComments = async (): Promise<Comment[]> => {
     let comments: Comment[] = [];
     let db = await createConnection();

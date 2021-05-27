@@ -25,9 +25,6 @@ const Home: NextPage<HomeProps> = ({posts}: HomeProps) => {
                         })}
                     </Container>
                 </Grid>
-               {/* <Grid item xs={2}>
-                    <p>Hello</p>
-                </Grid>*/}
             </Grid>
         </div>
 

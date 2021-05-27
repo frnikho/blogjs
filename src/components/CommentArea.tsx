@@ -6,7 +6,7 @@ import HOST_URL from "../data";
 
 export interface CommentAreaProps {
     post_id: string,
-    onPost: any
+    onPost: any,
 }
 
 const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaProps) => {

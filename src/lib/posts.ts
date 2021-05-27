@@ -32,21 +32,25 @@ export async function checkIfUrlKeyIsAvailable(key: string): Promise<boolean> {
     let response = await db.query(`SELECT id FROM posts WHERE url_key = '${key}'`);
 
     await db.end();
-    if (response === undefined || response[0] === undefined) {
-        return true;
-    } else {
-        return false;
-    }
+    return response === undefined || response[0] === undefined;
 }
 
 export async function createPost(post: Post): Promise<Post | null> {
     let db = await createConnection();
-    let response = await db.query(`INSERT INTO posts (user_id, category_id, title, content, url_key) VALUES (?, ?, ?, ?, ?) RETURNING *`,  [post.userId, post.categoryId, post.title, post.content, post.url_key]);
+    let response = await db.query(`INSERT INTO posts (user_id, category_id, title, content, url_key) VALUES (?, ?, ?, ?, ?) RETURNING *`,  [post.user_id, post.categoryId, post.title, post.content, post.url_key]);
     console.log(response);
     if (response === undefined || response[0] === undefined)
         return null;
     await db.end();
     return response[0] as Post;
+}
+
+export async function deletePostWithId(post_id: string): Promise<boolean> {
+    let db = await createConnection();
+    let response = await db.query(`DELETE FROM posts WHERE id = '${post_id}'`);
+    await db.end();
+
+    return response.affectedRows == 1;
 }
 
 export async function getAllPostFromUser(user_id: string): Promise<Post[]> {

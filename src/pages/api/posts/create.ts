@@ -21,7 +21,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         return badRequest(req, res, {message: `can't create url key with this title ! try a other one`});
 
     let post = await createPost({
-        userId: req.cookies.user_id,
+        user_id: req.cookies.user_id,
         title: req.body.title,
         url_key: key,
         categoryId: req.body.category,
