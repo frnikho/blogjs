@@ -5,7 +5,6 @@ import PostCover from "../components/PostCover";
 import Hero from "../components/Hero";
 import Container from "@material-ui/core/Container";
 import {Grid} from "@material-ui/core";
-import Link from "@material-ui/core/Link";
 import HOST_URL from "../data";
 
 interface HomeProps {
@@ -27,8 +26,6 @@ const Home: NextPage<HomeProps> = ({posts}: HomeProps) => {
                 </Grid>
             </Grid>
         </div>
-
-
     );
 }
 
@@ -41,20 +38,19 @@ export const getServerSideProps: GetServerSideProps = async () => {
         headers: {
             'Content-type': "application/json",
         }
+    }).then(async response => await response.json()).then(async response => {
+            posts = getPostsFromJsonArray(response.data);
+            return posts;
+        }).catch((error) => {
+            return [];
     });
-    let json: any = await response.json();
 
-    if (json.code !== 200) {
-        return {
-            props: { posts }
-        }
-    }
-    posts = getPostsFromJsonArray(json.data);
     return {
-      props: {
-          posts,
-      }
+        props: {
+            posts: response
+        }
     };
+
 }
 
 export default Home;

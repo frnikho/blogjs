@@ -93,31 +93,36 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                 category: category,
                 content: content,
             }),
-        }).catch((error) => {
+        }).then((response) => {
+            return response.json();
+        }).then(async response => {
+            console.log('data', response);
+            if (imageData !== "") {
+                let formData = new FormData();
+                formData.append('cover', imageData);
+
+                console.log(imageData);
+
+                let coverResponse = await axios.post(HOST_URL + "/api/posts/cover/" + response.data.id, formData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'POST',
+                }).catch((err) => {
+                    return err;
+                });
+            }
             setSubmitLoading(false);
+            if (response.code === 400) {
+                setInvalidMessage(response.message);
+                setIsValid(false);
+            } else if (response.code === 200) {
+                await router.push('/posts/' + response.data.url_key);
+            }
+        }).catch((error) => {
+            console.log('ERROR', error);
             return error;
         });
-        let response = await resp.json();
-
-
-        if (imageData !== "") {
-            let formData = new FormData();
-            formData.append('cover', imageData);
-
-            console.log(imageData);
-
-            let coverResponse = await axios.post(HOST_URL + "/api/posts/cover/" + response.data.id, formData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'POST',
-            }).catch((err) => {
-                return err;
-            });
-        }
-
-        setSubmitLoading(false);
-        await router.push('/posts/' + response.data.url_key);
     }
 
     const onTitleChanged = (event) => {

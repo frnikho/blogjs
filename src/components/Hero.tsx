@@ -12,7 +12,7 @@ const useStyles = (height: number, fontSize?: number) => makeStyles({
     root: {
         minHeight: height,
         backgroundColor: "#DFE6E9",
-        backgroundImage: "/space.jpg"
+        backgroundImage: "/default.jpg"
     },
     title: {
         fontSize: fontSize,

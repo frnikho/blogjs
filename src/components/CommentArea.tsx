@@ -44,22 +44,25 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
                 content: content,
                 post_id: post_id,
             }),
-        }).catch((error) => {
-            setLoading(false);
-            return error;
-        });
-
-        let response = await resp.json();
-        setIsValid(true);
-
-        if (response.code === 200) {
-            setResponse(response.data as Comment);
-            setContent("");
-            onPost(response.data as Comment);
-        } else {
-            setResponse(response);
-        }
-        setLoading(false);
+        })
+            .then(async response => await response.json())
+            .then(async response => {
+                setIsValid(true);
+                if (response.code === 200) {
+                    setResponse(response.data as Comment);
+                    setContent("");
+                    onPost(response.data as Comment);
+                } else {
+                    setResponse(response);
+                }
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                setInvalidMessage("Can't create comment !");
+                setIsValid(false);
+                return error;
+            });
     }
 
     const onContentChange = (event) => {

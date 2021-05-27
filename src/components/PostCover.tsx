@@ -43,9 +43,13 @@ const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
     const router = useRouter();
     const classes = useStyles()();
 
-    console.log("public" + post.image_cover_url);
+    let imagePath;
 
-    let imagePath = "public" + post.image_cover_url || "/space.jpg";
+    if (post.image_cover_url == null) {
+        imagePath = "/default.jpg"
+    } else {
+        imagePath = post.image_cover_url;
+    }
 
     return (
         <Card className={classes.root} elevation={0} onClick={() => router.push('/posts/' + post.url_key)}>
@@ -65,11 +69,6 @@ const PostCover: React.FC<PostCoverProps> = ({post}: PostCoverProps) => {
                     </Grid>
                     <Grid item>
                         <Moment date={post.created_date} format={"YYYY/MM/DD"}/>
-                    </Grid>
-                    <Grid item>
-                        {/*<Typography className={classes.content}>
-                            {post.content}
-                        </Typography>*/}
                     </Grid>
                 </Grid>
             </CardContent>

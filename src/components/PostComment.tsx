@@ -44,8 +44,15 @@ class PostComment extends Component<CommentProps> {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            });
-            this.props.onCommentDeleted();
+            })
+                .then(async response => await response.json())
+                .then(response => {
+                    if (response.code == 200) {
+                        this.props.onCommentDeleted();
+                    } else if (response.code == 400) {
+
+                    }
+                });
         }
     }
 

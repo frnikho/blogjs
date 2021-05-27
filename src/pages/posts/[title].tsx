@@ -13,6 +13,7 @@ import {User} from "../../types/User";
 import Moment from "react-moment";
 import HOST_URL from "../../data";
 import {useRouter} from "next/router";
+import {Alert} from "@material-ui/lab";
 
 interface PostPageProps {
     login_session?: any,
@@ -26,34 +27,41 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
 
     const [commentsState, setCommentsState] = useState(comments);
 
+    const [isValid, setIsValid] = useState(true);
+    const [invalidMessage, setInvalidMessage] = useState("");
+
     const router = useRouter();
 
     const onPost = async (comment: Comment) => {
-
-        let resp = await fetch(HOST_URL + "/api/comments/get/" + post.id, {
+        await fetch(HOST_URL + "/api/comments/get/" + post.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
-
-        let response = await resp.json();
-        setCommentsState(response.data);
+        })
+            .then(async response => await response.json())
+            .then(response => {
+                setCommentsState(response.data);
+            }).catch((error) => {
+               setIsValid(false);
+               setInvalidMessage("Can't get comments from server !");
+            });
     }
 
     const getUsername = async (user_id: string) => {
-        let resp = await fetch(HOST_URL + "/api/users/id/" + user_id, {
+        await fetch(HOST_URL + "/api/users/id/" + user_id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
-        });
-
-        let response = await resp.json();
-
-        if (response.code === 200)
-            return response.data;
-        return null;
+        })
+            .then(async response => await response.json())
+            .then((response) => {
+                if (response.code === 200)
+                    return response.data;
+            }).catch((error) => {
+                return null;
+            });
     }
 
     const deletePost = async () => {
@@ -64,9 +72,27 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
             headers: {
                 'Content-Type': 'application/json'
             }
-        });
-        let data = await response.json();
-        await router.push('/');
+        })
+            .then(async response => await response.json())
+            .then(async (response) => {
+                if (response.code === 200) {
+                    await router.push('/')
+                } else if (response.code === 400) {
+                    setInvalidMessage("Can't delete post !");
+                    setIsValid(false);
+                }
+            })
+            .catch(() => {
+                setInvalidMessage("Can't delete post !");
+                setIsValid(false);
+            });
+
+    }
+
+    const showError = () => {
+        if (!isValid) {
+            return (<Alert severity="error">{invalidMessage}</Alert>);
+        }
     }
 
     const showDeleteButton = () => {
@@ -86,6 +112,7 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
     return (
        <div>
            <Hero title={post?.title}/>
+           {showError()}
            <Box m={4}>
                <Grid container justify={"center"} alignContent={"center"} alignItems={"baseline"}>
                    <Grid item xs={9}>
@@ -121,47 +148,61 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
 
 export const getServerSideProps: GetServerSideProps = async ({params, res, req}) => {
     const {title} = params;
-    let response = await (await fetch(HOST_URL + `/api/posts/findByKey/${title as string}`)).json();
-    if (response.code != 200) {
+    let response = await fetch(HOST_URL + `/api/posts/findByKey/${title as string}`)
+        .then((async response => await response.json()))
+        .then((async response => {
+            if (response.code != 200) {
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: '/404',
+                    },
+                    code: "REDIRECT"
+                }
+            }
+
+            let resp = await fetch(HOST_URL + "/api/comments/get/" + response.data.id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            let responseComment = await resp.json();
+            let comments = responseComment.data;
+
+            let logged = false;
+            if (req.cookies.login_session !== undefined)
+                logged = true;
+
+            let userResponse = await fetch(HOST_URL + "/api/users/id/" + response.data.user_id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            let user;
+            if (userResponse !== undefined)
+                user = await userResponse.json();
+            return {
+                props: {
+                    logged,
+                    login_session: req.cookies.user_id || null,
+                    post: (response.data as Post),
+                    user: (user.data as User),
+                    comments: comments
+                },
+                code: "PROPS"
+                }
+        }));
+
+    if (response.code == "REDIRECT") {
         return {
-            redirect: {
-                permanent: false,
-                destination: '/404',
-            },
-            props: {}
+            redirect: response.redirect
         }
-    }
-
-    let resp = await fetch(HOST_URL + "/api/comments/get/" + response.data.id, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    let responseComment = await resp.json();
-    let comments = responseComment.data;
-
-    let logged = false;
-    if (req.cookies.login_session !== undefined)
-        logged = true;
-
-    let userResponse = await fetch(HOST_URL + "/api/users/id/" + response.data.user_id, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    let user;
-    if (userResponse !== undefined)
-        user = await userResponse.json();
-    return {
-        props: {
-            logged,
-            login_session: req.cookies.user_id || null,
-            post: (response.data as Post),
-            user: (user.data as User),
-            comments: comments
+    } else if (response.code == "PROPS") {
+        return {
+            props: response.props,
         }
     }
 }
