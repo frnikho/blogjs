@@ -99,9 +99,6 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
         setInvalidMessage("Can't delete comment !");
     }
 
-    console.log(post.title);
-    console.log(post);
-
     return (
        <div>
            <Hero title={post.title}/>
