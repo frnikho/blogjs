@@ -14,6 +14,7 @@ import Moment from "react-moment";
 import HOST_URL from "../../data";
 import {useRouter} from "next/router";
 import {Alert} from "@material-ui/lab";
+import {red} from "@material-ui/core/colors";
 
 interface PostPageProps {
     login_session?: any,
@@ -98,6 +99,9 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
         setInvalidMessage("Can't delete comment !");
     }
 
+    console.log(post.title);
+    console.log(post);
+
     return (
        <div>
            <Hero title={post.title}/>
@@ -147,20 +151,13 @@ export const getServerSideProps: GetServerSideProps = async ({params, res, req})
         code: "REDIRECT"
     };
 
-    let response = await fetch(HOST_URL + `/api/posts/findByKey/${title as string}`)
+    let respData = await fetch(HOST_URL + `/api/posts/findByKey/${title as string}`)
         .then((async response => await response.json()))
-        .then((async response => {
-            if (response.code != 200) {
-                return {
-                    redirect: {
-                        permanent: false,
-                        destination: '/404',
-                    },
-                    code: "REDIRECT"
-                }
-            }
+        .then((async responsePost => {
+            if (responsePost.code != 200)
+                throw 'invalid data';
 
-            let resp = await fetch(HOST_URL + "/api/comments/get/" + response.data.id, {
+            let resp = await fetch(HOST_URL + "/api/comments/get/" + responsePost.data.id, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -171,29 +168,30 @@ export const getServerSideProps: GetServerSideProps = async ({params, res, req})
                     return redirect
                 });
 
-            if (resp.code != undefined && resp.code === "REDIRECT") {
-                return resp;
+            if (resp === redirect) {
+                return redirect;
             }
 
             let comments = resp.data;
+
 
             let logged = false;
             if (req.cookies.login_session !== undefined)
                 logged = true;
 
-            return await fetch(HOST_URL + "/api/users/id/" + response.data.user_id, {
+            return await fetch(HOST_URL + "/api/users/id/" + responsePost.data.user_id, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
                 .then(async (response) => response.json())
-                .then(async (response) => {
+                .then((response) => {
                     return {
                         props: {
                             logged,
                             login_session: req.cookies.user_id || null,
-                            post: (response.data as Post),
+                            post: (responsePost.data as Post),
                             user: (response.data as User),
                             comments: comments
                         },
@@ -206,13 +204,14 @@ export const getServerSideProps: GetServerSideProps = async ({params, res, req})
             return redirect
         });
 
-    if (response.code == "REDIRECT") {
+    if (respData.code == "REDIRECT") {
         return {
-            redirect: response.redirect
+            props: {},
+            redirect: redirect.redirect
         }
-    } else if (response.code == "PROPS") {
+    } else if (respData.code == "PROPS") {
         return {
-            props: response.props,
+            props: respData.props,
         }
     }
 }
