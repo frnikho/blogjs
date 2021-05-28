@@ -36,6 +36,9 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
 
     const [result, setResult] = useState(null);
 
+    const [isValid, setIsValid] = useState(true);
+    const [invalidMessage, setInvalidMessage] = useState("");
+
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
     }
@@ -58,18 +61,18 @@ export function LoginDialog({isOpen, handleClose, onLogin}) {
 
     const submit = async () => {
 
-        let resp = await fetch(HOST_URL + "/api/auth/login", {
+        await fetch(HOST_URL + "/api/auth/login", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password}),
-        }).catch((err) => {
-            return err;
-        });
-
-        let response = await resp.json();
-        setResult(response);
-        if (response !== null && instanceOfUser(response.data))
-            onLogin(response.data);
+        }).then(async (result) => result.json())
+            .then((response) => {
+                setResult(response);
+                if (response !== null && instanceOfUser(response.data))
+                    onLogin(response.data);
+            }).catch((err) => {
+                setResult("");
+            });
     }
 
     return (

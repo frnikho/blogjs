@@ -38,7 +38,6 @@ export async function checkIfUrlKeyIsAvailable(key: string): Promise<boolean> {
 export async function createPost(post: Post): Promise<Post | null> {
     let db = await createConnection();
     let response = await db.query(`INSERT INTO posts (user_id, category_id, title, content, url_key) VALUES (?, ?, ?, ?, ?) RETURNING *`,  [post.user_id, post.categoryId, post.title, post.content, post.url_key]);
-    console.log(response);
     if (response === undefined || response[0] === undefined)
         return null;
     await db.end();

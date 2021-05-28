@@ -31,16 +31,20 @@ const LayoutLoginAppBar: React.FC = ({}) => {
     };
 
     const logout = async () => {
-        let resp = await fetch(HOST_URL + "/api/auth/session", {
+        await fetch(HOST_URL + "/api/auth/session", {
             method: 'DELETE',
             credentials: "include"
-        });
-        let response = await resp.json();
-        if (response.code === 200) {
-            removeCookie('login_session', cookieOptions);
-            removeCookie('user_id', cookieOptions);
-        }
-        setSession("");
+        })
+            .then(async (response) => response.json())
+            .then(response => {
+                if (response.code === 200) {
+                    removeCookie('login_session', cookieOptions);
+                    removeCookie('user_id', cookieOptions);
+                }
+                setSession("");
+            }).catch((error) => {
+                console.log("can't remove user session !")
+            });
     }
 
     const setLoginCookie = (s: Session, user: User) => {
@@ -51,21 +55,21 @@ const LayoutLoginAppBar: React.FC = ({}) => {
     }
 
     const onLogin = async (user: User) => {
-        let resp = await fetch(HOST_URL + "/api/auth/session", {
+        await fetch(HOST_URL + "/api/auth/session", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({user_id: user.id}),
             credentials: "include"
-        });
-        let response = await resp.json();
-
-        if (response.code === 200) {
-            let s: Session = (response.data as Session);
-            setLoginCookie(s, user);
-            console.log("logged !");
-        } else {
-            console.log("error while creating user session", response);
-        }
+        })
+            .then(async (response) => await response.json())
+            .then(response => {
+                if (response.code === 200) {
+                    let s: Session = (response.data as Session);
+                    setLoginCookie(s, user);
+                } else {
+                    console.log("error while creating user session", response);
+                }
+            });
         closeLoginDialog();
     }
 
@@ -74,12 +78,10 @@ const LayoutLoginAppBar: React.FC = ({}) => {
     });
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+        if (event != null)
+            setAnchorEl(event.currentTarget);
     };
 
-    const routeToProfile = async () => {
-        await router.push('/profile/' + cookies.username);
-    }
 
     return (
         <div>

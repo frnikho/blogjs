@@ -102,14 +102,19 @@ export function RegisterDialog({isOpen, handleClose}) {
         if (!(usernameIsValid && emailIsValid && passwordIsValid))
             return;
 
-        let resp = await fetch(HOST_URL + "/api/users/create", {
+        await fetch(HOST_URL + "/api/users/create", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password, email}),
-        });
-        let data = await resp.json();
-        setResponse(data);
-        console.log(data);
+        })
+            .then(async (response) => response.json())
+            .then((response) => {
+                setResponse(response);
+            }).catch((error) => {
+                setResponse({
+                    code: 400
+                });
+            });
     }
 
     return (

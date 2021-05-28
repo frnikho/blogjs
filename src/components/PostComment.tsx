@@ -7,8 +7,8 @@ import {useCookies} from "react-cookie";
 
 export interface CommentProps {
     onCommentDeleted: Function,
+    onError: Function,
     comment: type.Comment,
-    username?: string,
     user_id: string
 }
 
@@ -16,25 +16,6 @@ class PostComment extends Component<CommentProps> {
 
     constructor(props) {
         super(props);
-        this.state = {
-            username: ""
-        }
-        this.getUsername().then((username) => {
-            this.state = {
-                username: username
-            }
-        });
-    }
-
-    getUsername = async () => {
-        let resp = await fetch(HOST_URL + "/api/users/id/" + this.props.comment.user_id, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).catch(err => err);
-        let response = await resp.json();
-        return response.data.username;
     }
 
     deleteComment = async () => {
@@ -50,7 +31,7 @@ class PostComment extends Component<CommentProps> {
                     if (response.code == 200) {
                         this.props.onCommentDeleted();
                     } else if (response.code == 400) {
-
+                        this.props.onError();
                     }
                 });
         }

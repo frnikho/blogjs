@@ -58,12 +58,6 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
             return;
         setCoverImageData(URL.createObjectURL(file));
         setImageData(file);
-/*        const reader = new FileReader();
-        const url = reader.readAsDataURL(file);
-        reader.onloadend = (e) => {
-            console.log(reader.result);
-            setImageData(reader.result.toString());
-        };*/
     }
 
     const showCoverImagePreview = () => {
@@ -83,7 +77,7 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
             return;
         setSubmitLoading(true);
 
-        let resp = await fetch(HOST_URL + "/api/posts/create", {
+        await fetch(HOST_URL + "/api/posts/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,12 +90,9 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
         }).then((response) => {
             return response.json();
         }).then(async response => {
-            console.log('data', response);
             if (imageData !== "") {
                 let formData = new FormData();
                 formData.append('cover', imageData);
-
-                console.log(imageData);
 
                 let coverResponse = await axios.post(HOST_URL + "/api/posts/cover/" + response.data.id, formData, {
                     headers: {
@@ -120,7 +111,8 @@ const PostPage: NextPage<CreatePostProps> = ({categories}: CreatePostProps) => {
                 await router.push('/posts/' + response.data.url_key);
             }
         }).catch((error) => {
-            console.log('ERROR', error);
+            setIsValid(false);
+            setInvalidMessage("An error occurred !");
             return error;
         });
     }
@@ -251,25 +243,31 @@ export const getServerSideProps: GetServerSideProps = async ({params, req, res})
         }
     }
 
-    let resp = await fetch(HOST_URL + '/api/categories/all', {
+    let data = await fetch(HOST_URL + '/api/categories/all', {
         method: 'GET',
         headers: {
             'Content-type': 'application/json',
         }
-    });
-
-    let response = await resp.json();
-    if (response.code === 200) {
-        return {
-            props: {
-                categories: response.data
+    })
+        .then(async (response) => await response.json())
+        .then(response => {
+            if (response.code === 200) {
+                return {
+                    categories: response.data
+                }
+            } else {
+                return {
+                    categories: null,
+                }
             }
-        }
-    }
+        })
+        .catch((error) => {
+            return {
+                categories: null,
+            }
+        });
     return {
-        props: {
-            categories: null,
-        }
+        props: data
     }
 }
 

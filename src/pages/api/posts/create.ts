@@ -13,7 +13,10 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     if (!await checkSessionIsRegistered(req.cookies.login_session))
         return badRequest(req, res, {message: 'Invalid user session, clear your cookie and try again'});
 
-    console.log(req.body);
+    if (req.body.content.length < 50 && req.body.content > 25565)
+        return badRequest(req, res, {message: "too long or too short content ! (> 50 && < 25565)"});
+    if (req.body.title.length < 5 && req.body.title > 200)
+        return badRequest(req, res, {message: "too long or too short title ! (> 5 && < 200)"});
 
     let key = createPostUrlKey(req.body.title);
     let canContinue = await checkIfUrlKeyIsAvailable(key);
@@ -29,9 +32,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         id: '?'
     });
 
-    console.log(post);
     if (post === null) {
-        return badRequest(req, res, {message: 'Internal Server Error'});
+        return badRequest(req, res, {message: 'An error occurred, try again later !'});
     } else {
         return ok(req, res, {data: post});
     }

@@ -34,7 +34,7 @@ const CommentArea: React.FC<CommentAreaProps> = ({post_id, onPost}: CommentAreaP
         }
 
         setLoading(true);
-        let resp = await fetch(HOST_URL + "/api/comments/create", {
+        await fetch(HOST_URL + "/api/comments/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

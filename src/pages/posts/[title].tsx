@@ -48,26 +48,10 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
             });
     }
 
-    const getUsername = async (user_id: string) => {
-        await fetch(HOST_URL + "/api/users/id/" + user_id, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(async response => await response.json())
-            .then((response) => {
-                if (response.code === 200)
-                    return response.data;
-            }).catch((error) => {
-                return null;
-            });
-    }
-
     const deletePost = async () => {
         if (post.user_id != login_session)
             return;
-        let response = await fetch(HOST_URL + "/api/posts/delete/" + post.id, {
+        await fetch(HOST_URL + "/api/posts/delete/" + post.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,9 +93,14 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
         }
     }
 
+    const onError = () => {
+        setIsValid(false);
+        setInvalidMessage("Can't delete comment !");
+    }
+
     return (
        <div>
-           <Hero title={post?.title}/>
+           <Hero title={post.title}/>
            {showError()}
            <Box m={4}>
                <Grid container justify={"center"} alignContent={"center"} alignItems={"baseline"}>
@@ -139,7 +128,7 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
                <h2>Comments</h2>
                {showComment()}
                {commentsState?.map((comment)=> {
-                   return (<PostComment key={comment.id} comment={comment} onCommentDeleted={onPost} user_id={login_session}/>)
+                   return (<PostComment key={comment.id} comment={comment} onCommentDeleted={onPost} user_id={login_session} onError={onError}/>)
                })}
            </Box>
        </div>
@@ -148,6 +137,16 @@ const PostPage: NextPage<PostPageProps> = ({post, login_session, logged, user, c
 
 export const getServerSideProps: GetServerSideProps = async ({params, res, req}) => {
     const {title} = params;
+
+    let redirect = {
+        props: {},
+        redirect: {
+            permanent: false,
+            destination: '/404',
+        },
+        code: "REDIRECT"
+    };
+
     let response = await fetch(HOST_URL + `/api/posts/findByKey/${title as string}`)
         .then((async response => await response.json()))
         .then((async response => {
@@ -166,35 +165,46 @@ export const getServerSideProps: GetServerSideProps = async ({params, res, req})
                 headers: {
                     'Content-Type': 'application/json',
                 },
-            });
+            })
+                .then(async (response) => await response.json())
+                .catch((error) => {
+                    return redirect
+                });
 
-            let responseComment = await resp.json();
-            let comments = responseComment.data;
+            if (resp.code != undefined && resp.code === "REDIRECT") {
+                return resp;
+            }
+
+            let comments = resp.data;
 
             let logged = false;
             if (req.cookies.login_session !== undefined)
                 logged = true;
 
-            let userResponse = await fetch(HOST_URL + "/api/users/id/" + response.data.user_id, {
+            return await fetch(HOST_URL + "/api/users/id/" + response.data.user_id, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+            })
+                .then(async (response) => response.json())
+                .then(async (response) => {
+                    return {
+                        props: {
+                            logged,
+                            login_session: req.cookies.user_id || null,
+                            post: (response.data as Post),
+                            user: (response.data as User),
+                            comments: comments
+                        },
+                        code: "PROPS"
+                    }
+            }).catch((error) => {
+                return redirect
             });
-            let user;
-            if (userResponse !== undefined)
-                user = await userResponse.json();
-            return {
-                props: {
-                    logged,
-                    login_session: req.cookies.user_id || null,
-                    post: (response.data as Post),
-                    user: (user.data as User),
-                    comments: comments
-                },
-                code: "PROPS"
-                }
-        }));
+        })).catch((error) => {
+            return redirect
+        });
 
     if (response.code == "REDIRECT") {
         return {
